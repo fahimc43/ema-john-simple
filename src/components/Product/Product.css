@@ -3,12 +3,18 @@
     border-bottom: 1px solid lightgrey;
     margin: 10px;
     padding: 5px;
+    
 }
 .product-name{
     color: blue;
     font-weight: 400;
     margin-left: 10px;
+    cursor: pointer;
 }
+/* .head-line a:-webkit-any-link{
+    color : red ! important;
+    text-decoration : none ! important;
+} */
 .main-btn{
     background-color: goldenrod;
     width: 150px;

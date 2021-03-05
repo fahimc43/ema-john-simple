@@ -14,6 +14,7 @@ nav a {
     color: white;
     margin-right: 20px;
     padding: 5px;
+    cursor: pointer;
 }
 nav a:hover {
     background-color: gray;
