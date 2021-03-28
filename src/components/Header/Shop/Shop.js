@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import fakeData from '../../../fakeData';
 import { addToDatabaseCart, getDatabaseCart } from '../../../utilities/databaseManager';
 import Cart from '../../Cart/Cart';
 import Product from '../../Product/Product';
@@ -7,20 +6,29 @@ import './Shop.css';
 import { Link } from 'react-router-dom/cjs/react-router-dom.min';
 
 const Shop = () => {
-    const first10 = fakeData.slice(0, 10);
-    const [products, setProducts] = useState(first10);
+    // const first10 = fakeData.slice(0, 10);
+    const [products, setProducts] = useState([]);
     const [cart, setCart] = useState([]);
 
     useEffect(() => {
-        const savedCart = getDatabaseCart();
-        const productKey = Object.keys(savedCart);
-        const previousCart = productKey.map(existingKey => {
-            const product = fakeData.find(pd => pd.key === existingKey);
-            product.quantity = savedCart[existingKey];
-            return product;
-        })
-        setCart(previousCart);
+        fetch('http://localhost:5000/products')
+            .then(res => res.json())
+            .then(data => setProducts(data))
     }, [])
+
+    useEffect(() => {
+        const savedCart = getDatabaseCart();
+        const productKeys = Object.keys(savedCart);
+        fetch('http://localhost:5000/productsByKeys', {
+            method: 'POST',
+            headers: {
+                'Content-Type' : 'application/json'
+            },
+            body: JSON.stringify(productKeys)
+        })
+        .then(res => res.json())
+        .then(data => setCart(data))
+    }, [products])
 
     const handleAddProduct = (product) => {
         const toBeAdded = product.key;
@@ -34,7 +42,7 @@ const Shop = () => {
             newCart = [...others, sameProduct];
 
         }
-        else{
+        else {
             product.quantity = 1;
             newCart = [...cart, product];
         }
@@ -48,14 +56,14 @@ const Shop = () => {
     return (
         <div className="twin-container">
             <div className="product-container">
-                    {
-                        products.map(pd => <Product
-                            key={pd.key}
-                            showAddToCart={true}
-                            handleAddProduct={handleAddProduct}
-                            product={pd}>
-                            </Product>)
-                    }
+                {
+                    products.map(pd => <Product
+                        key={pd.key}
+                        showAddToCart={true}
+                        handleAddProduct={handleAddProduct}
+                        product={pd}>
+                    </Product>)
+                }
             </div>
             <div className="cart-container">
                 <Cart cart={cart}>
@@ -63,7 +71,7 @@ const Shop = () => {
                         <button className="main-btn">Review Order</button>
                     </Link>
                 </Cart>
-                    
+
             </div>
         </div>
     );

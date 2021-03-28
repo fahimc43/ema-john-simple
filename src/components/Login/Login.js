@@ -47,6 +47,7 @@ function Login() {
           photo: photoURL
         }
         setUser(isSignedInUser);
+        setLoggedInUser(isSignedInUser);
         history.replace(from);
         // console.log(displayName, email, photoURL);
       })
